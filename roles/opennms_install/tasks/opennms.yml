@@ -1,5 +1,15 @@
 ---
 
+- name: Template datasources
+  template:
+    src: opennms-datasources.xml.j2
+    dest: "{{ opennms_home }}/etc/opennms-datasources.xml"
+    validate: /bin/xmllint --noout %s
+    owner: root
+    group: root
+    mode: '0664'
+  notify: opennms_restart
+
 - name: Check if java.conf exists
   stat:
     path: "{{ opennms_home }}/etc/java.conf"
@@ -14,6 +24,9 @@
   template:
     src: timeseries.conf.j2
     dest: "{{ opennms_home }}/etc/opennms.properties.d/timeseries.properties"
+    owner: root
+    group: root
+    mode: '0664'
   when: opennms_rrdtool_enable | bool
   notify: opennms_restart
 
@@ -21,6 +34,9 @@
   template:
     src: reverse_proxy.properties.j2
     dest: "{{ opennms_home }}/etc/opennms.properties.d/reverse-proxy.properties"
+    owner: root
+    group: root
+    mode: '0664'
   when: opennms_reverse_proxy_enable
   notify: opennms_restart
 
