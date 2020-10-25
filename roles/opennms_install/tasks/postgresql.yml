@@ -4,11 +4,13 @@
   stat:
     path: "{{ postgresql_data_dir }}/PG_VERSION"
   register: pg_version_file
+  when: opennms_postgresql_install | bool
 
 - name: Initialize PostgreSQL database
   command: "{{ postgresql_bin_dir }}/initdb -D {{ postgresql_data_dir }}"
   when:
     - not pg_version_file.stat.exists
+    - opennms_postgresql_install | bool
   become: true
   become_user: postgres
 
@@ -17,6 +19,7 @@
     name: "{{ postgresql_service }}"
     state: started
     enabled: yes
+  when: opennms_postgresql_install | bool
 
 - name: Create OpenNMS PostgreSQL user
   community.general.postgresql_user:
@@ -40,3 +43,6 @@
   template:
     src: pg_hba.conf.j2
     dest: "{{ postgresql_data_dir }}/pg_hba.conf"
+    owner: postgres
+    group: postgres
+    mode: '0600'
