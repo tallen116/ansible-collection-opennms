@@ -1,11 +1,20 @@
 ---
 
+# Installs basic PostgreSQL on localhost
 opennms_postgresql_install: True
-opennms_postgresql_version: 11
+
+# The version of PostgreSQL utilized
+#opennms_postgresql_version: 11
+opennms_postgresql_version: 12
+
 opennms_disable_repo: True
 
 opennms_admin_user: admin
 opennms_admin_password: admin
+
+# PostgreSQL connection string
+opennms_database_address: 127.0.0.1
+opennms_database_port: 5432
 
 opennms_database_name: opennms
 opennms_database_user: opennms
@@ -39,7 +48,30 @@ opennms_ldap_servers:
   - address: ""
     port: ""
 
-opennms_rrdtool_enable: True
-opennms_rrdtool_graph_engine: True
+opennms_jetty_port: 8980
+# To listen to all keep value at 0.0.0.0
+# For localhost set value to 127.0.0.1
+opennms_jetty_host: 0.0.0.0
+opennms_jetty_ncsa_logging_enable: False
+# This sets the web base url to https://%x%c/
+opennms_jetty_reverse_proxy: False
+opennms_jetty_base_url: https://%x%c/
 
+opennms_jetty_ssl_enable: False
+opennms_jetty_ssl_port: 8443
+opennms_jetty_ssl_host: 0.0.0.0
+opennms_jetty_keystore: /opt/opennms/etc/jetty.keystore
+opennms_jetty_ssl_keystore_password: changeit
+opennms_jetty_ssl_key_password: changeit
+
+# being deprecated
 opennms_reverse_proxy_enable: False
+
+opennms_javamail_from_address: root@[127.0.0.1]
+
+# Configure the timeseries provider
+# Options are jrobin, rrdtool, newts
+opennms_timeseries_provider: jrobin
+
+opennms_rrdtool_enable: False
+opennms_rrdtool_graph_engine: True
