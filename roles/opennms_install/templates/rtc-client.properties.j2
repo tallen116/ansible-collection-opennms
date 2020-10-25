@@ -1,0 +1,15 @@
+###### RTC IPC ######
+# The base of a URL that RTC clients use when creating a RTC subscription URL.
+# If you are using Tomcat instead of the built-in Jetty, change this in
+# WEB-INF/configuration.properties instead.
+{% if opennms_jetty_host == '0.0.0.0' %}
+opennms.rtc-client.http-post.base-url = http://127.0.0.1:{{ opennms_jetty_port }}/opennms/rtc/post
+{% else %}
+opennms.rtc-client.http-post.base-url = http://{{ opennms_jetty_host }}:{{ opennms_jetty_port }}/opennms/rtc/post
+{% endif %}
+
+# The username the RTC uses when authenticating itself in an HTTP POST.
+opennms.rtc-client.http-post.username = rtc
+
+# The password the RTC uses when authenticating itself in an HTTP POST.
+opennms.rtc-client.http-post.password = rtc

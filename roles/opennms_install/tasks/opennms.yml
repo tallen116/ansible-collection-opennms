@@ -40,6 +40,33 @@
   when: opennms_reverse_proxy_enable
   notify: opennms_restart
 
+- name: Set Jetty properties
+  template:
+    src: jetty-server.properties.j2
+    dest: "{{ opennms_home }}/etc/opennms.properties.d/jetty-server.properties"
+    owner: root
+    group: root
+    mode: '0664'
+  notify: opennms_restart
+
+- name: Set RTC client properties
+  template:
+    src: rtc-client.properties.j2
+    dest: "{{ opennms_home }}/etc/opennms.properties.d/rtc-client.properties"
+    owner: root
+    group: root
+    mode: '0664'
+  notify: opennms_restart
+
+- name: Set Javamail properties
+  template:
+    src: javamail-configuration.properties.j2
+    dest: "{{ opennms_home }}/etc/javamail-configuration.properties"
+    owner: root
+    group: root
+    mode: '0664'
+  notify: opennms_restart
+
 - name: Check if OpenNMS has been configured
   stat:
     path: "{{ opennms_home }}/etc/configured"

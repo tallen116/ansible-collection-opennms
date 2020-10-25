@@ -1,0 +1,22 @@
+###### JETTY HTTPS SUPPORT ######
+# Details: http://www.opennms.org/index.php/Standalone_HTTPS_with_Jetty
+# If you want Jetty to provide an HTTPS listener, this is the port to listen on
+# Note that setting this property does NOT disable the plain HTTP listener,
+# which is required by Rtcd to post realtime status updates.  If you do not
+# wish to allow unsecured HTTP access to the OpenNMS web UI, you must set
+# org.opennms.netmgt.jetty.host above or use firewall rules to accomplish this.
+org.opennms.netmgt.jetty.https-port = {{ opennms_jetty_ssl_port }}
+# By default, if configured for HTTPS, Jetty will listen on all interfaces.
+# You can set a specific bind address here.
+org.opennms.netmgt.jetty.https-host = {{ opennms_jetty_ssl_host }}
+## To set the keystore file from which Jetty will retrieve its SSL key,
+## change the value of this property.  Note that the jetty.properties
+## distributed with OpenNMS should never be used in production.
+org.opennms.netmgt.jetty.https-keystore = {{ opennms_jetty_keystore }}
+## To change the keystore password used to access the keystore specified
+## in the https-keystore property above, uncomment and change this property
+org.opennms.netmgt.jetty.https-keystorepassword = {{ opennms_jetty_ssl_keystore_password }}
+## To change the key password used to access the Jetty SSL key (which is stored
+## in the keystore specified by the https-keystore property), uncomment and
+## change this property.
+org.opennms.netmgt.jetty.https-keypassword = {{ opennms_jetty_ssl_key_password }}

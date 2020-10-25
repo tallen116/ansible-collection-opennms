@@ -1,0 +1,35 @@
+###### JETTY WEB UI ######
+# If you are using Jetty, this is the port to listen on
+org.opennms.netmgt.jetty.port = {{ opennms_jetty_port }}
+
+# By default, Jetty will listen on all interfaces. You can set a specific
+# bind address here. If you set this to a value other than 127.0.0.1,
+# you will need to update the rtc-client and map-client URLs above.
+org.opennms.netmgt.jetty.host = {{ opennms_jetty_host }}
+
+#
+# This enables NCSA style request logging in ${opennm.home}/logs
+#
+# Uncomment this and change to true to enable this
+{% if opennms_jetty_ncsa_logging_enable %}
+org.opennms.netmgt.jetty.enableRequestLogging=true
+{% else %}
+org.opennms.netmgt.jetty.enableRequestLogging=false
+{% endif %}
+
+# This sets the maximum size for a form submission in jetty.
+# The default value is 200000 bytes.  Setting it to -1 disables
+# the form limit
+# In 1.8 or earlier set
+#org.mortbay.jetty.Request.maxFormContentSize=200000
+#
+# in 1.9 or later set
+#org.eclipse.jetty.server.Request.maxFormContentSize=200000
+
+# This sets the request header size for jetty.
+# The default value is 4000 bytes.
+#org.opennms.netmgt.jetty.requestHeaderSize=4000
+
+# This sets the maximum number of items that can be in web forms (like the
+# Provisioning web UI)
+org.eclipse.jetty.server.Request.maxFormKeys=2000
