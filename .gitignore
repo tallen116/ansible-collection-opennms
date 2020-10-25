@@ -1,3 +1,4 @@
 *.pyc
 *.retry
 tests/output
+.venv/
