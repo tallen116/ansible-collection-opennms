@@ -1,0 +1,7 @@
+{{ ansible_managed | comment }}
+
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+{% for auth in postgresql_hba_entries %}
+{{ auth['type'] }} {{ auth['database'] }} {{ auth['user'] }} {{ auth['address'] | default(omit) }} {{ auth['method'] }}
+{% endfor %}

@@ -1,0 +1,12 @@
+---
+# handlers file for roles/opennms_install
+
+- name: opennms_restart
+  service:
+    name: opennms
+    state: restarted
+
+- name: Restart OpenNMS
+  service:
+    name: opennms
+    state: restarted

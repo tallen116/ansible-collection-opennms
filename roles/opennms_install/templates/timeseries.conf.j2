@@ -1,0 +1,8 @@
+org.opennms.rrd.strategyClass=org.opennms.netmgt.rrd.rrdtool.MultithreadedJniRrdStrategy
+org.opennms.rrd.interfaceJar={{ jrrd2_jar }}
+opennms.library.jrrd2={{ jrrd2_library }}
+{% if opennms_rrdtool_graph_engine is defined %}
+{% if opennms_rrdtool_graph_engine %}
+org.opennms.web.graphs.engine=rrdtool # optional, unset if you want to keep Backshift as default
+{% endif %}
+{% endif %}

@@ -1,0 +1,78 @@
+---
+- name: Install postgresql module dependencies (RedHat <8)
+  yum:
+    name: python-psycopg2
+    state: present
+  when:
+    - ansible_distribution_major_version == "7"
+
+- name: Install postgresql module dependencies (Redhat 8)
+  yum:
+    name: python3-psycopg2
+    state: present
+  when:
+    - ansible_distribution_major_version == "8"
+
+- name: Install PostgreSQL GPG key
+  rpm_key:
+    key: https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG
+    fingerprint: 68C9 E2B9 1A37 D136 FE74  D176 1F16 D2E1 442D F0F8
+    state: present
+  when:
+    - opennms_postgresql_install | bool
+
+- name: Install PostgreSQL repo
+  yum:
+    name: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{ distribution_major_version }}-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+    state: present
+  when:
+    - opennms_postgresql_install | bool
+
+- name: Install OpenNMS GPG key
+  rpm_key:
+    key: https://yum.opennms.org/OPENNMS-GPG-KEY
+    fingerprint: 7956 4AEB 7CC6 C014 88E7  C647 5780 1F6F 5B9E FD43
+    state: present
+
+- name: Install OpenNMS repo
+  yum:
+    name: "https://yum.opennms.org/repofiles/opennms-repo-stable-rhel{{ distribution_major_version }}.noarch.rpm"
+    state: present
+
+- name: Disable built-in PostgreSQL module (RedHat 8)
+  copy:
+    content: |
+      [postgresql]
+      name=postgresql
+      profiles=
+      state=disabled
+      stream=
+    dest: /etc/dnf/modules.d/postgresql.module
+  when:
+    - ansible_distribution_major_version == "8"
+    - opennms_postgresql_install | bool
+
+- name: Install PostgreSQL
+  yum:
+    name: "{{ postgresql_package }}"
+    state: present
+  when:
+    - opennms_postgresql_install | bool
+
+- name: Install OpenNMS
+  yum:
+    name: opennms
+    state: present
+
+- name: Install RRDTool
+  yum:
+    name:
+      - rrdtool
+      - jrrd2
+    state: present
+  when: opennms_rrdtool_enable | bool
+
+- name: Install IPlike
+  yum:
+    name: "iplike-pgsql{{ opennms_postgresql_version }}"
+    state: present

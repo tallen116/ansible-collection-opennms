@@ -1,0 +1,40 @@
+---
+
+- name: Check if java.conf exists
+  stat:
+    path: "{{ opennms_home }}/etc/java.conf"
+  register: java_conf_file
+
+- name: Detect java environment
+  command: "{{ opennms_home }}/bin/runjava -s"
+  when:
+    - not java_conf_file['stat']['exists']
+
+- name: Enable RRDTool
+  template:
+    src: timeseries.conf.j2
+    dest: "{{ opennms_home }}/etc/opennms.properties.d/timeseries.properties"
+  when: opennms_rrdtool_enable | bool
+  notify: opennms_restart
+
+- name: Enable Reverse proxy
+  template:
+    src: reverse_proxy.properties.j2
+    dest: "{{ opennms_home }}/etc/opennms.properties.d/reverse-proxy.properties"
+  when: opennms_reverse_proxy_enable
+  notify: opennms_restart
+
+- name: Check if OpenNMS has been configured
+  stat:
+    path: "{{ opennms_home }}/etc/configured"
+  register: configured_file
+
+- name: Initialize OpenNMS
+  command: "{{ opennms_home }}/bin/install -dis"
+  when: not configured_file['stat']['exists']
+
+- name: Start OpenNMS
+  service:
+    name: opennms
+    state: started
+    enabled: yes

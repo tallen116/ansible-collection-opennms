@@ -1,0 +1,42 @@
+---
+
+- name: Check if PostgreSQL database is initialized
+  stat:
+    path: "{{ postgresql_data_dir }}/PG_VERSION"
+  register: pg_version_file
+
+- name: Initialize PostgreSQL database
+  command: "{{ postgresql_bin_dir }}/initdb -D {{ postgresql_data_dir }}"
+  when:
+    - not pg_version_file.stat.exists
+  become: true
+  become_user: postgres
+
+- name: Start and enable PostgreSQL
+  service:
+    name: "{{ postgresql_service }}"
+    state: started
+    enabled: yes
+
+- name: Create OpenNMS PostgreSQL user
+  community.general.postgresql_user:
+    name: "{{ opennms_database_user }}"
+    password: "{{ opennms_database_password }}"
+    state: present
+
+- name: Create OpenNMS PostgreSQL database
+  community.general.postgresql_db:
+    name: "{{ opennms_database_name }}"
+    owner: "{{ opennms_database_user }}"
+    state: present
+
+- name: Set password for postgres database user
+  community.general.postgresql_user:
+    name: "{{ opennms_database_postgres_user }}"
+    password: "{{ opennms_database_postgres_password }}"
+    state: present
+
+- name: Template pg_hba.conf
+  template:
+    src: pg_hba.conf.j2
+    dest: "{{ postgresql_data_dir }}/pg_hba.conf"

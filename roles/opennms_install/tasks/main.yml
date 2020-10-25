@@ -1,0 +1,28 @@
+---
+# tasks file for roles/opennms_install
+
+- name: Debug
+  debug:
+    msg: "Install OpenNMS"
+
+- name: Load variables based on OS type
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_os_family }}.yml"
+      paths:
+        - vars
+
+- name: Set variables
+  include_tasks: variables.yml
+
+- name: Install OpenNMS (RedHat)
+  include_tasks: "install-{{ os_family | lower }}.yml"
+
+- name: PostgreSQL tasks
+  include_tasks: postgresql.yml
+
+- name: OpenNMS tasks
+  include_tasks: opennms.yml

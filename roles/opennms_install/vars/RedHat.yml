@@ -1,0 +1,9 @@
+---
+
+_postgresql_data_directory:
+  10: /var/lib/pgsql/10/data
+  11: /var/lib/pgsql/11/data
+  12: /var/lib/pgsql/12/data
+
+jrrd2_jar: /usr/share/java/jrrd2.jar
+jrrd2_library: /usr/lib64/libjrrd2.so

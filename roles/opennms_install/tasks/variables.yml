@@ -1,0 +1,16 @@
+---
+
+- name: Set PostgreSQL variables (RedHat)
+  set_fact:
+    postgresql_package: "postgresql{{ opennms_postgresql_version }}-server"
+    postgresql_service: "postgresql-{{ opennms_postgresql_version }}.service"
+    postgresql_data_dir: "/var/lib/pgsql/{{ opennms_postgresql_version }}/data"
+    postgresql_bin_dir: "/usr/pgsql-{{ opennms_postgresql_version }}/bin"
+  when:
+    - os_family == "RedHat"
+
+- name: Set OpenNMS home directory (RedHat)
+  set_fact:
+    opennms_home: /opt/opennms
+  when:
+    - os_family == "RedHat"
