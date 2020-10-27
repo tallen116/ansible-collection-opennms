@@ -8,8 +8,5 @@
   - tallen116.opennms
 
   tasks:
-  - name: Debug facts
-    debug:
-      var: ansible_facts
   - include_role:
-      name: tallen116.opennms.opennms_install
+      name: tallen116.opennms.opennms_server
