@@ -7,6 +7,10 @@ opennms_postgresql_install: True
 #opennms_postgresql_version: 11
 opennms_postgresql_version: 12
 
+# Installs a specific OpenJDK version (Keep defaults unless specific use case)
+opennms_java_install: True
+opennms_java_version: 11
+
 opennms_disable_repo: True
 
 opennms_admin_user: admin
