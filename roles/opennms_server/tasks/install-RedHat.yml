@@ -23,7 +23,7 @@
 
 - name: Install PostgreSQL repo
   yum:
-    name: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{ distribution_major_version }}-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+    name: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{ ansible_distribution_major_version }}-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
     state: present
   when:
     - opennms_postgresql_install | bool
@@ -36,7 +36,7 @@
 
 - name: Install OpenNMS repo
   yum:
-    name: "https://yum.opennms.org/repofiles/opennms-repo-stable-rhel{{ distribution_major_version }}.noarch.rpm"
+    name: "https://yum.opennms.org/repofiles/opennms-repo-stable-rhel{{ ansible_distribution_major_version }}.noarch.rpm"
     state: present
 
 - name: Disable built-in PostgreSQL module (RedHat 8)
