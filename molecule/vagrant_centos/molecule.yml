@@ -13,8 +13,8 @@ lint: |
 platforms:
   - name: centos-7
     box: centos/7
-    memory: 1024
-    cpus: 1
+    memory: 2048
+    cpus: 2
     interfaces:
       # `network_name` is the required identifier, all other keys map to
       # arguments.
@@ -23,8 +23,8 @@ platforms:
         host: 8981
   - name: centos-8
     box: centos/8
-    memory: 1024
-    cpus: 1
+    memory: 2048
+    cpus: 2
     interfaces:
       # `network_name` is the required identifier, all other keys map to
       # arguments.
