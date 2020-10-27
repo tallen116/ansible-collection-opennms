@@ -1,0 +1,12 @@
+---
+- name: Converge
+  hosts: all
+  become_user: root
+  become: yes
+
+  collections:
+  - tallen116.opennms
+
+  tasks:
+  - include_role:
+      name: tallen116.opennms.opennms_server
