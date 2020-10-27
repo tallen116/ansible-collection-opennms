@@ -17,7 +17,7 @@
   include_tasks: variables.yml
 
 - name: Install OpenNMS (RedHat)
-  include_tasks: "install-{{ os_family | lower }}.yml"
+  include_tasks: "install-{{ os_family }}.yml"
 
 - name: PostgreSQL tasks
   include_tasks: postgresql.yml

@@ -62,9 +62,19 @@
   when:
     - opennms_postgresql_install | bool
 
+- name: Install OpenNMS requirements
+  yum:
+    name:
+      - "java-{{ opennms_java_version }}-openjdk-devel"
+    state: present
+  when:
+    - opennms_java_install | bool
+
 - name: Install OpenNMS
   yum:
-    name: opennms
+    name:
+      - opennms-core
+      - opennms-webapp-jetty
     state: present
 
 - name: Install RRDTool
