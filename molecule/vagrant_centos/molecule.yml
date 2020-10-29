@@ -33,6 +33,8 @@ platforms:
         host: 8982
 provisioner:
   name: ansible
+  playbooks:
+    converge: ../common/converge.yml
   log: True
 verifier:
   name: ansible

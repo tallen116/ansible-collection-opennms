@@ -3,7 +3,19 @@
 
 - name: Verify
   hosts: all
+  gather_facts: false
   tasks:
-  - name: Example assertion
+  - name: Gather service facts
+    service_facts:
+
+  - name: Verify Webpage access
+    uri:
+      url: http://localhost:8980/opennms
+      status_code: 200
+    register: opennms_webpage
+
+  - name: Verify service
     assert:
-      that: true
+      that:
+        - ansible_facts['services']['opennms.service']['state'] == "running"
+        - ansible_facts['services']['opennms.service']['status'] == "enabled"
