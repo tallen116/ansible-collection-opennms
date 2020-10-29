@@ -23,5 +23,7 @@ platforms:
     command: "/sbin/init"
 provisioner:
   name: ansible
+  env:
+    ANSIBLE_COLLECTIONS_PATHS: "/home/travis/build/tallen116:~/.ansible/collections:/usr/share/ansible/collections"
 verifier:
   name: ansible

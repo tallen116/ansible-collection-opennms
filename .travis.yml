@@ -1,6 +1,10 @@
 dist: bionic
-
 language: python
+
+env:
+  global:
+    - COLLECTION_NAMESPACE="tallen116"
+    - COLLECTION_NAME="opennms"
 
 services:
   - docker
@@ -25,6 +29,13 @@ install:
   - pip install flake8==3.8.4
   - pip install molecule==3.0.8
   - pip install docker==4.3.1
+
+before_script:
+  # Setup collection path
+  - cd ../
+  - mkdir -p ansible_collections/$COLLECTION_NAMESPACE
+  - mv ansible-collection-$COLLECTION_NAME ansible_collections/$COLLECTION_NAMESPACE/$COLLECTION_NAME
+  - cd ansible_collections/$COLLECTION_NAMESPACE/$COLLECTION_NAME
 
 script:
   # Check versions
