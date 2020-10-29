@@ -31,6 +31,7 @@
   community.general.postgresql_db:
     name: "{{ opennms_database_name }}"
     owner: "{{ opennms_database_user }}"
+    encoding: UTF8
     state: present
 
 - name: Set password for postgres database user
