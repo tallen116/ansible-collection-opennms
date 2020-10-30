@@ -73,8 +73,9 @@ opennms_jetty_ssl_host: 0.0.0.0
 opennms_jetty_keystore: /opt/opennms/etc/jetty.keystore
 opennms_jetty_ssl_keystore_password: changeit
 opennms_jetty_ssl_key_password: changeit
-opennms_jetty_ssl_certificate: ""
-opennms_jetty_ssl_private_key: ""
+# Use these options to generate the keystore
+#opennms_jetty_ssl_certificate: ""
+#opennms_jetty_ssl_private_key: ""
 
 # being deprecated
 opennms_reverse_proxy_enable: False

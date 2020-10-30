@@ -33,4 +33,7 @@
     owner: root
     mode: '0640'
     dest: "{{ opennms_jetty_keystore }}"
-  when: opennms_jetty_ssl_enable | bool
+  when:
+    - opennms_jetty_ssl_enable | bool
+    - opennms_jetty_ssl_certificate is defined
+    - opennms_jetty_ssl_private_key is defined

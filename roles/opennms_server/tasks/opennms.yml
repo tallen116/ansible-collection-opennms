@@ -20,6 +20,9 @@
   when:
     - not java_conf_file['stat']['exists']
 
+- name: Import Jetty tasks
+  include_tasks: opennms-jetty.yml
+
 - name: Enable RRDTool
   template:
     src: timeseries.conf.j2
@@ -38,15 +41,6 @@
     group: root
     mode: '0664'
   when: opennms_reverse_proxy_enable
-  notify: opennms_restart
-
-- name: Set Jetty properties
-  template:
-    src: jetty-server.properties.j2
-    dest: "{{ opennms_home }}/etc/opennms.properties.d/jetty-server.properties"
-    owner: root
-    group: root
-    mode: '0664'
   notify: opennms_restart
 
 - name: Set RTC client properties
