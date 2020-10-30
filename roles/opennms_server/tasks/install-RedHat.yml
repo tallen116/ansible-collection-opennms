@@ -63,7 +63,7 @@
   when:
     - opennms_postgresql_install | bool
 
-- name: Install OpenNMS requirements
+- name: Install OpenJDK
   yum:
     name:
       - "java-{{ opennms_java_version }}-openjdk-devel"
