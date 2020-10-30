@@ -4,12 +4,12 @@
   xsi:schemaLocation="http://xmlns.opennms.org/xsd/config/opennms-datasources 
   http://www.opennms.org/xsd/config/opennms-datasources.xsd ">
 
-  <connection-pool factory="org.opennms.core.db.HikariCPConnectionFactory"
-    idleTimeout="600"
-    loginTimeout="3"
-    minPool="50"
-    maxPool="50"
-    maxSize="50" />
+  <connection-pool factory="{{ opennms_database_connection_factory }}"
+    idleTimeout="{{ opennms_database_idle_timeout }}"
+    loginTimeout="{{ opennms_database_login_timeout }}"
+    minPool="{{ opennms_database_min_pool }}"
+    maxPool="{{ opennms_database_max_pool }}"
+    maxSize="{{ opennms_database_max_size }}" />
 
   <jdbc-data-source name="opennms" 
                     database-name="{{ opennms_database_name }}" 

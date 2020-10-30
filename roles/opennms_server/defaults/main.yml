@@ -26,6 +26,13 @@ opennms_database_password: opennms
 opennms_database_postgres_user: postgres
 opennms_database_postgres_password: postgres
 
+opennms_database_connection_factory: 'org.opennms.core.db.HikariCPConnectionFactory'
+opennms_database_idle_timeout: 600
+opennms_database_login_timeout: 3
+opennms_database_min_pool: 50
+opennms_database_max_pool: 50
+opennms_database_max_size: 50
+
 postgresql_hba_entries:
   - type: local
     database: all
