@@ -6,7 +6,16 @@
     name: opennms
     state: restarted
 
-- name: Restart OpenNMS
+- name: opennms_stop
   service:
     name: opennms
-    state: restarted
+    state: stopped
+
+- name: opennms_init
+  command: "{{ opennms_home }}/bin/install -dis"
+
+- name: opennms_start
+  service:
+    name: opennms
+    state: started
+

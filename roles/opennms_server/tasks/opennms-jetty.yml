@@ -1,0 +1,36 @@
+---
+
+- name: Set Jetty properties
+  template:
+    src: jetty-server.properties.j2
+    dest: "{{ opennms_home }}/etc/opennms.properties.d/jetty-server.properties"
+    owner: root
+    group: root
+    mode: '0664'
+  notify: opennms_restart
+
+- name: Set Jetty properties
+  template:
+    src: jetty-ssl.properties.j2
+    dest: "{{ opennms_home }}/etc/opennms.properties.d/jetty-ssl.properties"
+    owner: root
+    group: root
+    mode: '0664'
+  when:
+    - opennms_jetty_ssl_enable | bool
+  notify:
+    - opennms_stop
+    - opennms_init
+    - opennms_start
+
+- name: Create Java Keystore for Jetty SSL
+  community.general.java_keystore:
+    name: jetty
+    certificate: "{{ lookup('file', opennms_jetty_ssl_certificate) }}"
+    private_key: "{{ lookup('file', opennms_jetty_ssl_private_key) }}"
+    password: "{{ opennms_jetty_ssl_keystore_password }}"
+    group: root
+    owner: root
+    mode: '0640'
+    dest: "{{ opennms_jetty_keystore }}"
+  when: opennms_jetty_ssl_enable | bool
