@@ -5,8 +5,18 @@
   become: yes
 
   collections:
-  - tallen116.opennms
+    - tallen116.opennms
 
   tasks:
-  - include_role:
-      name: tallen116.opennms.opennms_server
+    # Fix for Centos-8 docker image
+    - name: Install locale package (Redhat 8)
+      yum:
+        name:
+          - glibc-langpack-en
+        state: present
+      when:
+        - ansible_distribution_major_version == "8"
+        - ansible_os_family == "RedHat"
+
+    - include_role:
+        name: tallen116.opennms.opennms_server
