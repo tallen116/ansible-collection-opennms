@@ -21,5 +21,17 @@
         - ansible_distribution_major_version == "8"
         - ansible_os_family == "RedHat"
 
+    - name: OpenNMS password (MD5)
+      debug:
+        msg: "{{ lookup('tallen116.opennms.opennms_password', 'password') }}"
+
+    - name: OpenNMS password (Salt)
+      debug:
+        msg: "{{ lookup('tallen116.opennms.opennms_password', 'password', encrypt='salt') }}"
+
+    - name: OpenNMS password (Salt+Salt)
+      debug:
+        msg: "{{ lookup('tallen116.opennms.opennms_password', 'password', encrypt='salt', salt='a1G$dy60') }}"
+
     - include_role:
         name: tallen116.opennms.opennms_server
