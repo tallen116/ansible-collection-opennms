@@ -17,6 +17,7 @@
     uri:
       url: https://localhost:8443/opennms
       status_code: 200
+      validate_certs: false
 
   - name: Verify service
     assert:
