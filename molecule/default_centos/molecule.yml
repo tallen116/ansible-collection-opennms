@@ -7,7 +7,7 @@ lint: |
   set -e
   yamllint .
   ansible-lint
-  flake8
+  flake8 --ignore E402
 platforms:
   - name: centos-7
     image: centos:7
