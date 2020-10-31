@@ -9,6 +9,18 @@
     mode: '0664'
   notify: opennms_restart
 
+- name: Set jetty.xml
+  template:
+    src: jetty.xml.j2
+    dest: "{{ opennms_home }}/etc/jetty.xml"
+    owner: root
+    group: root
+    mode: '0664'
+  notify:
+    - opennms_stop
+    - opennms_init
+    - opennms_start
+
 - name: Set Jetty properties
   template:
     src: jetty-ssl.properties.j2
@@ -18,10 +30,7 @@
     mode: '0664'
   when:
     - opennms_jetty_ssl_enable | bool
-  notify:
-    - opennms_stop
-    - opennms_init
-    - opennms_start
+  notify: opennms_restart
 
 - name: Create Java Keystore for Jetty SSL
   community.general.java_keystore:

@@ -4,8 +4,8 @@
   become_user: root
   become: yes
   vars:
-    #opennms_jetty_keystore: /opt/opennms/etc/examples/jetty.keystore
-    #opennms_jetty_ssl_enable: True
+    opennms_jetty_keystore: /opt/opennms/etc/examples/jetty.keystore
+    opennms_jetty_ssl_enable: True
 
   collections:
     - tallen116.opennms
