@@ -9,6 +9,16 @@
     mode: '0664'
   notify: opennms_restart
 
+- name: Set Jetty base url
+  template:
+    src: jetty-url.properties.j2
+    dest: "{{ opennms_home }}/etc/opennms.properties.d/jetty-url.properties"
+    owner: root
+    group: root
+    mode: '0664'
+  when: opennms_jetty_base_url is defined
+  notify: opennms_restart
+
 - name: Set jetty.xml
   template:
     src: jetty.xml.j2
