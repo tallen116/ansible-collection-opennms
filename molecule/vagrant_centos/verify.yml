@@ -8,11 +8,15 @@
   - name: Gather service facts
     service_facts:
 
-  - name: Verify Webpage access
+  - name: Verify webpage (http)
     uri:
       url: http://localhost:8980/opennms
       status_code: 200
-    register: opennms_webpage
+
+  - name: Verify webpage (https)
+    uri:
+      url: https://localhost:8443/opennms
+      status_code: 200
 
   - name: Verify service
     assert:
