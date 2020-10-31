@@ -50,13 +50,11 @@ _raw:
   type: string
 """
 
-import sys
 from hashlib import sha256
 from hashlib import md5
 import base64
 import random
 
-from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 from ansible.module_utils._text import to_text
 from ansible.utils.display import Display
@@ -107,10 +105,10 @@ def salt_digest(message, salt_size, iter, salt_string=None):
     """
     input = bytearray(message, 'utf_8')
 
-    if salt_string == None:
+    if salt_string is None:
         salt_array = bytearray()
         for i in range(0, salt_size):
-            salt_array.append(random.randint(0,255))
+            salt_array.append(random.randint(0, 255))
     else:
         _salt_md5 = md5(bytes(salt_string, 'utf_8')).digest()
         salt_array = bytearray(_salt_md5)
@@ -136,11 +134,11 @@ class LookupModule(LookupBase):
 
         self.set_options(direct=kwargs)
 
-        if self.get_option('encrypt') == None:
+        if self.get_option('encrypt') is None:
             encrypt = 'md5'
         else:
             encrypt = self.get_option('encrypt')
-        
+
         salt = self.get_option('salt')
 
         ret = []
@@ -150,8 +148,8 @@ class LookupModule(LookupBase):
             if encrypt == 'md5':
                 password_hash = md5_digest(term)
             else:
-                if salt == None:
-                   password_hash = salt_digest(term, salt_size=SALT_SIZE, iter=HASH_ITER)
+                if salt is None:
+                    password_hash = salt_digest(term, salt_size=SALT_SIZE, iter=HASH_ITER)
                 else:
                     password_hash = salt_digest(term, salt_size=SALT_SIZE, iter=HASH_ITER, salt_string=salt)
 
