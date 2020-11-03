@@ -49,6 +49,8 @@ class ONMSAPIModule(ONMSModule):
             )
         except(SSLValidationError) as ssl_error:
             self.fail_json(msg="Could not establish a secure connection to {0}: {1}".format(self.url.geturl(), ssl_error))
+        except(ConnectionError) as ce:
+            self.fail_json(msg="Failed to connect to {0}: {1}".format(self.url.geturl(), ce))
         except(HTTPError) as he:
             if he.code >= 500:
                 self.fail_json(msg="The host responded with a server error ({1}): {0}".format(url.netloc, he.code))
