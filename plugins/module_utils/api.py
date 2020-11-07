@@ -20,15 +20,23 @@ class ONMSAPIModule(ONMSModule):
         self.request = Request()
 
     def make_request(self, method, endpoint, *args, **kwargs):
+        """
+        Make API request.
+        """
 
         if not method:
             raise Exception("The HTTP method must be defined")
 
         headers = {}
-        headers['Accept'] = "application/json"
+        if method == 'GET':
+            headers['Accept'] = "application/json"
+        if method == 'POST' and kwargs.get('xml_data') is True:
+            headers['Content-Type'] = 'application/xml'
+        else:
+            headers['Content-Type'] = 'application/json'
         validate_certs = self.params.get('validate_certs')
-        username = self.params.get('username')
-        password = self.params.get('password')
+        username = self.username
+        password = self.password
         force_basic_auth = True
         data = kwargs.get('data', None)
         version = kwargs.get('version', 1)
@@ -59,9 +67,14 @@ class ONMSAPIModule(ONMSModule):
             if he.code == 403:
                 self.fail_json(msg="A forbidden request was sent to the host ({1}): {0}".format(url.netloc, he.msg))
             if he.code == 404:
+                # TODO Return none in some cases
+                if kwargs.get('ignore_404', False):
+                    return None
                 self.fail_json(msg="The requested resource does not exist at {0}".format(url.path))
             if he.code == 405:
                 self.fail_json(msg="The host responded that method {0} is not allowed to this endpoint {1}".format(method, url.path))
+            if he.code == 400:
+                self.fail_json(msg="The host received a malformed request to {0}".format(url.path))
         except(Exception) as e:
             self.fail_json(msg="There was an unknown error when calling {0}: {1}.".format(self.url.geturl(), e))
 
@@ -84,3 +97,10 @@ class ONMSAPIModule(ONMSModule):
         else:
             status_code = response.status
         return {'status_code': status_code, 'json': response_json}
+
+    def get(self, endpoint, *args, **kwargs):
+        return self.make_request('GET', endpoint, **kwargs)
+
+    def post(self, endpoint, *args, **kwargs):
+        return self.make_request('POST', endpoint, **kwargs)
+        pass
