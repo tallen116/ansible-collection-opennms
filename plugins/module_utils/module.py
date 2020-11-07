@@ -13,9 +13,9 @@ import re
 class ONMSModule(AnsibleModule):
 
     AUTH_ARGSPEC = dict(
-        host=dict(type='str', required=True),
-        username=dict(type='str', required=True),
-        password=dict(type='str', required=True, no_log=True),
+        onms_host=dict(type='str', required=True),
+        onms_username=dict(type='str', required=True),
+        onms_password=dict(type='str', required=True, no_log=True),
         validate_certs=dict(type='bool')
     )
 
@@ -35,8 +35,9 @@ class ONMSModule(AnsibleModule):
 
         super(ONMSModule, self).__init__(full_argspec, **kwargs)
 
-        self.host = self.params['host']
-        self.debug(msg="The host provided is {}".format(self.host))
+        self.host = self.params['onms_host']
+        self.username = self.params.get('onms_username')
+        self.password = self.params.get('onms_password')
 
         # Validate
         if not re.match('^https?://', self.host):
@@ -58,7 +59,7 @@ class ONMSModule(AnsibleModule):
         """
         Build the URL for the REST calls.
         Base URL is http(s)://opennms:8980/opennms/rest/
-        Base V2 URL is http(s)://opennms:8980/opennms/rest/v2/
+        Base V2 URL is http(s)://opennms:8980/opennms/api/v2/
         """
         if not endpoint.startswith("/"):
             endpoint = "/{0}".format(endpoint)
