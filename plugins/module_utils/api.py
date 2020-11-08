@@ -103,4 +103,6 @@ class ONMSAPIModule(ONMSModule):
 
     def post(self, endpoint, *args, **kwargs):
         return self.make_request('POST', endpoint, **kwargs)
-        pass
+
+    def delete(self, endpoint, *args, **kwargs):
+        return self.make_request('DELETE', endpoint)
