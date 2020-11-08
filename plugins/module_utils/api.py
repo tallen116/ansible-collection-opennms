@@ -106,3 +106,6 @@ class ONMSAPIModule(ONMSModule):
 
     def delete(self, endpoint, *args, **kwargs):
         return self.make_request('DELETE', endpoint)
+
+    def put(self, endpoint, *args, **kwargs):
+        return self.make_request('PUT', endpoint, **kwargs)
