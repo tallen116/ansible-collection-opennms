@@ -42,5 +42,9 @@ provisioner:
   playbooks:
     converge: ../common/converge.yml
   log: True
+  options:
+    vvv: False
+  env:
+    ANSIBLE_DEBUG: False
 verifier:
   name: ansible
