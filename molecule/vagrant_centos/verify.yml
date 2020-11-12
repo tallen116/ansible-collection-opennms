@@ -24,3 +24,38 @@
       that:
         - ansible_facts['services']['opennms.service']['state'] == "running"
         - ansible_facts['services']['opennms.service']['status'] == "enabled"
+
+  - name: Verify user (HTTP - molecule_basic)
+    uri:
+      url: http://127.0.0.1:8980/opennms/rest/users/molecule_basic
+      user: admin
+      password: admin
+      method: GET
+      force_basic_auth: yes
+
+  - name: Verify user (HTTPS - molecule_basic)
+    uri:
+      url: https://127.0.0.1:8443/opennms/rest/users/molecule_basic
+      user: admin
+      password: admin
+      method: GET
+      force_basic_auth: yes
+      validate_certs: no
+
+  - name: Verify user (HTTP - molecule_advance)
+    uri:
+      url: http://127.0.0.1:8980/opennms/rest/users/molecule_advance
+      user: admin
+      password: admin
+      method: GET
+      force_basic_auth: yes
+      validate_certs: no
+
+  - name: Verify user (HTTPS - molecule_advance)
+    uri:
+      url: https://127.0.0.1:8443/opennms/rest/users/molecule_advance
+      user: admin
+      password: admin
+      method: GET
+      force_basic_auth: yes
+      validate_certs: no
