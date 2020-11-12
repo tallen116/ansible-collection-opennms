@@ -35,3 +35,46 @@
 
     - include_role:
         name: tallen116.opennms.opennms_server
+
+    - name: Module testing
+      tallen116.opennms.opennms_user:
+        onms_host: https://127.0.0.1:8443
+        onms_username: admin
+        onms_password: password
+        validate_certs: no
+        name: test25
+        password: "{{ lookup('tallen116.opennms.opennms_password', 'ansible', encrypt='salt', salt='a1G$dy60') }}"
+        full_name: Ansible Test
+        email: a_test@ansible.local
+        description: A test using Ansible
+        duty_schedule:
+          - days:
+              - Monday
+            start_time: 0000
+            end_time: 2359
+          - days:
+              - Monday
+              - Tuesday
+              - Wednesday
+              - Thursday
+              - Sunday
+            start_time: 630
+            end_time: 1900
+          - days:
+              - Friday
+              - Saturday
+            start_time: 1000
+            end_time: 1730
+        role:
+          - ROLE_ADMIN
+          - ROLE_USER
+        state: present
+
+    - name: Module testing
+      tallen116.opennms.opennms_user:
+        onms_host: https://127.0.0.1:8443
+        onms_username: admin
+        onms_password: password
+        validate_certs: no
+        name: test30
+        password: "{{ lookup('tallen116.opennms.opennms_password', 'ansible', encrypt='salt', salt='a1G$dy60') }}"
