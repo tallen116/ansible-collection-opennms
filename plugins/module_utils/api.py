@@ -32,6 +32,8 @@ class ONMSAPIModule(ONMSModule):
             headers['Accept'] = "application/json"
         if method == 'POST' and kwargs.get('xml_data') is True:
             headers['Content-Type'] = 'application/xml'
+        elif method == 'PUT' and kwargs.get('xml_data') is True:
+            headers['Content-Type'] = 'application/xml'
         else:
             headers['Content-Type'] = 'application/json'
         validate_certs = self.params.get('validate_certs')
