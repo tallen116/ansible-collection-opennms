@@ -34,10 +34,7 @@ before_script:
   # Setup collection path
   - cd ../
   - mkdir -p /home/travis/.ansible/collections/ansible_collections/$COLLECTION_NAMESPACE
-  #- mkdir -p ansible_collections/$COLLECTION_NAMESPACE
-  #- mv ansible-collection-$COLLECTION_NAME ansible_collections/$COLLECTION_NAMESPACE/$COLLECTION_NAME
   - mv ansible-collection-$COLLECTION_NAME /home/travis/.ansible/collections/ansible_collections/$COLLECTION_NAMESPACE/$COLLECTION_NAME
-  #- cd ansible_collections/$COLLECTION_NAMESPACE/$COLLECTION_NAME
   - cd /home/travis/.ansible/collections/ansible_collections/$COLLECTION_NAMESPACE/$COLLECTION_NAME
 
 script:
