@@ -6,6 +6,126 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
+DOCUMENTATION = r'''
+---
+module: opennms_user
+
+short_description: Manage OpenNMS users
+
+version_added: "0.1.0"
+
+description: A module to add, modify, delete OpenNMS users.
+
+        name=dict(type='str', required=True),
+        password=dict(type='str', required=True),
+        password_salt=dict(type='bool', default=True),
+        full_name=dict(),
+        email=dict(),
+        description=dict(),
+        duty_schedule=dict(type='list', elements='dict'),
+        role=dict(type='list', elements='str'),
+        state=dict(type='str', choices=['present', 'absent'], default='present')
+
+options:
+    name:
+        description: The name of the user.
+        required: true
+        type: str
+    password:
+        description: The password for the user.
+        required: true
+        type: str
+    password_salt:
+        description: The password salt hashing algorithm.
+        default: true
+        type: bool
+    full_name:
+        description: The full name of the user.
+        type: str
+    email:
+        description: The email address of the user.
+        type: str
+    description:
+        description: Any comment for the user.
+        type: str
+    duty_schedule:
+        description: The duty schedule for the user.
+        type: list
+        suboptions:
+            days:
+                description: The day of the week for the schedule.
+                choices:
+                    - Monday
+                    - Tuesday
+                    - Wednesday
+                    - Thursday
+                    - Friday
+                    - Saturday
+                    - Sunday
+                type: str
+            start_time:
+                description: The start time of the schedule depicted in 24 hour.
+                type: int
+            end_time:
+                description: The end time of the schedule depicted in 24 hour.
+                type: int
+    role:
+        description: The roles assigned to the user.
+        type: list
+    state:
+        description:
+            - The state of the user.
+            - Set to `present` to create or update the user.
+            - Set to `absent` to remove the user.
+        choices:
+            - present
+            - absent
+
+author:
+  - Timothy Allen (@tallen116)
+'''
+
+EXAMPLES = r'''
+- name: Add basic user
+  tallen116.opennms.opennms_user:
+    name: basic
+    password: "{{ lookup('tallen116.opennms.opennms_password', 'ansible', encrypt='salt') }}"
+    state: present
+
+- name: Add advance user
+  tallen116.opennms.opennms_user:
+    name: advance
+    password: "{{ lookup('tallen116.opennms.opennms_password', 'ansible', encrypt='salt') }}"
+    full_name: Advance User
+    email: advance.user@localhost.local
+    description: A advance user example
+    duty_schedule:
+      - days:
+          - Monday
+        start_time: 0
+        end_time: 2359
+      - days:
+          - Monday
+          - Tuesday
+          - Wednesday
+          - Thursday
+          - Sunday
+        start_time: 630
+        end_time: 1900
+      - days:
+          - Friday
+          - Saturday
+        start_time: 1000
+        end_time: 1730
+    role:
+      - ROLE_ADMIN
+      - ROLE_USER
+    state: present
+'''
+
+RETURN = r'''
+
+'''
 
 from ..module_utils.api import ONMSAPIModule
 import xml.etree.ElementTree as ET
