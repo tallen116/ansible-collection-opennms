@@ -152,8 +152,17 @@ def check_user_difference(
     duty_schedule=None,
     role=None
 ):
-    """
-    Checks for differeneces in user parameters.
+    """Checks for differences in user parameters.
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+    bool
+        True if there is a difference, else False.
+    dict
+        The users used for comparison.
     """
     response_data = {
         "user-id": name,
@@ -190,8 +199,17 @@ def check_user_difference(
 
 
 def create_duty_schedule_string(schedule, *args):
-    """
-    Create the string for the duty schedule for API usage.
+    """Returns the string for the duty schedule for API usage.
+
+    Parameters
+    ----------
+    schedule : list
+
+    Returns
+    -------
+    string
+        The formatted string used for the duty schedule api.
+
     """
 
     # schedule_days = [i.lower() for i in schedule['days']]
@@ -210,8 +228,18 @@ def create_duty_schedule_string(schedule, *args):
 
 
 def create_duty_schedule_list(schedule=None):
-    """
-    Create the list for all duty schedules.
+    """Create the list for all duty schedules.
+
+    Parameters
+    ----------
+    schedule : list
+        The list of duty schedules in argument spec format.
+
+    Returns
+    -------
+    list
+        The list of duty schedules formatted in api form.
+
     """
     if schedule is None:
         return None
@@ -233,8 +261,27 @@ def create_user_xml(
     duty_schedule=None,
     role=None
 ):
-    """
-    Create XML specification to use with API.
+    """Returns XML format of the user.
+
+    Parameters
+    ----------
+    name : str
+        User ID of the user
+    password : str
+        Password of the user
+    password_salt : bool
+        Password is stored using the SALT algorithm
+    full_name : str
+        Descriptive name for the user
+    email : str
+        Email of the user
+    description : str
+        Description of the user
+    duty_schedule : list
+        Duty schedule assigned to the user
+    role : list
+        Roles assigned to the user
+
     """
 
     xml_root = ET.Element('user')
