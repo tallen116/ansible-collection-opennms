@@ -280,12 +280,27 @@ def main():
 
     argument_spec = dict(
         name=dict(type='str', required=True),
-        password=dict(type='str', required=True),
+        password=dict(type='str', required=True, nolog=True),
         password_salt=dict(type='bool', default=True),
-        full_name=dict(),
-        email=dict(),
-        description=dict(),
-        duty_schedule=dict(type='list', elements='dict'),
+        full_name=dict(type='str'),
+        email=dict(type='str'),
+        description=dict(type='str'),
+        duty_schedule=dict(
+            type='list',
+            options=dict(
+                days=dict(type=list, elements='str', choices=[
+                    'Monday',
+                    'Tuesday',
+                    'Wednesday',
+                    'Thursday',
+                    'Friday',
+                    'Saturday',
+                    'Sunday'
+                ]),
+                start_time=dict(type=int),
+                end_time=dict(type=int)
+            )
+        ),
         role=dict(type='list', elements='str'),
         state=dict(type='str', choices=['present', 'absent'], default='present')
     )
