@@ -1,0 +1,6 @@
+---
+requires_ansible: '>=2.9.10,<2.11'
+plugin_routing:
+  modules:
+    user:
+      redirect: opennms.opennms_user
