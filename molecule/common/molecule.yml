@@ -1,0 +1,20 @@
+---
+dependency:
+  name: galaxy
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+  flake8
+provisioner:
+  name: ansible
+  playbooks:
+    converge: ../common/converge.yml
+    verify: ../common/verify.yml
+  log: True
+  options:
+    vvv: False
+  env:
+    ANSIBLE_DEBUG: False
+verifier:
+  name: ansible

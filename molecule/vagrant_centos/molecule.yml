@@ -1,15 +1,8 @@
 ---
-dependency:
-  name: galaxy
 driver:
   name: vagrant
   provider:
     name: virtualbox
-lint: |
-  set -e
-  yamllint .
-  ansible-lint
-  flake8
 platforms:
   - name: centos-7
     box: centos/7
@@ -37,14 +30,3 @@ platforms:
       - network_name: forwarded_port
         guest: 8443
         host: 8444
-provisioner:
-  name: ansible
-  playbooks:
-    converge: ../common/converge.yml
-  log: True
-  options:
-    vvv: False
-  env:
-    ANSIBLE_DEBUG: False
-verifier:
-  name: ansible

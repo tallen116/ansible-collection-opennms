@@ -46,4 +46,4 @@ script:
   - pwd
   - ls -l
 
-  - molecule test -s $scenario
+  - molecule --base-config molecule/common/molecule.yml test --scenario-name $scenario

@@ -1,13 +1,6 @@
 ---
-dependency:
-  name: galaxy
 driver:
   name: docker
-lint: |
-  set -e
-  yamllint .
-  ansible-lint
-  flake8 --ignore E402
 platforms:
   - name: centos-7
     image: centos:7
@@ -21,11 +14,3 @@ platforms:
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
     command: "/sbin/init"
-provisioner:
-  name: ansible
-  playbooks:
-    converge: ../common/converge.yml
-  env:
-    ANSIBLE_COLLECTIONS_PATHS: "/home/travis/build/tallen116:~/.ansible/collections:/usr/share/ansible/collections"
-verifier:
-  name: ansible
