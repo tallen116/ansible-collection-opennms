@@ -140,190 +140,167 @@ DAYS_OF_WEEK = {
     'Sunday': 'Su'
 }
 
-
-def check_user_difference(
-    user,
-    name,
-    password,
-    password_salt=True,
-    full_name=None,
-    email=None,
-    description=None,
-    duty_schedule=None,
-    role=None
-):
-    """Checks for differences in user parameters.
-
-    Parameters
-    ----------
-
-    Returns
-    -------
-    bool
-        True if there is a difference, else False.
-    dict
-        The users used for comparison.
-    """
-    response_data = {
-        "user-id": name,
-        "full-name": full_name,
-        "user-comments": description,
-        "email": email,
-        "password": password,
-        "passwordSalt": password_salt,
-        "duty-schedule": create_duty_schedule_list(duty_schedule),
-        "role": role
-    }
-
-    # Format keys to match defaults if info is not provided
-    for key, value in dict(response_data).items():
-        if key == 'duty-schedule' and value is None:
-            response_data[key] = []
-        elif key == 'role' and value is None:
-            response_data[key] = []
-        elif key == 'email' and value is None:
-            response_data[key] = ""
-        elif value is None:
-            del response_data[key]
-
-    if user == response_data:
-        diff = False
-    else:
-        diff = True
-
-    user_diff = {
-        "before": user,
-        "after": response_data
-    }
-    return diff, user_diff
+API_ENDPOINT = '/users'
+API_VERSION = 1
 
 
-def create_duty_schedule_string(schedule, *args):
-    """Returns the string for the duty schedule for API usage.
+class OpennmsUser:
 
-    Parameters
-    ----------
-    schedule : list
+    def __init__(self, module):
+        self.module = module
+        self.name = module.params.get('name')
+        self.password = module.params.get('password')
+        self.password_salt = module.params.get('password_salt')
+        self.full_name = module.params.get('full_name')
+        self.email = module.params.get('email')
+        self.description = module.params.get('description')
+        self.duty_schedule = module.params.get('duty_schedule')
+        self.role = module.params.get('role')
+        self.endpoint = API_ENDPOINT + '/' + self.name
+        self.api_result = module.get(self.endpoint, version=API_VERSION, ignore_404=True)
 
-    Returns
-    -------
-    string
-        The formatted string used for the duty schedule api.
+    def remove_user(self):
+        result = self.module.delete(self.endpoint)
+        return {
+            'changed': True,
+            'message': "The user {0} was removed.".format(self.name),
+            'status_code': result['status_code']
+        }
 
-    """
+    def add_user(self):
+        result = self.module.post(API_ENDPOINT, version=API_VERSION, data=self.generate_xml(), xml_data=True)
+        return {
+            'changed': True,
+            'message': "The user {0} was added or modifed.".format(self.name),
+            'status_code': result['status_code']
+        }
 
-    # schedule_days = [i.lower() for i in schedule['days']]
-    schedule_days = schedule['days']
-    schedule_start = schedule['start_time']
-    schedule_end = schedule['end_time']
-    schedule_result = ''
-    for day in DAYS_OF_WEEK:
-        if day in schedule_days:
-            schedule_result += DAYS_OF_WEEK[day]
+    def update_user(self):
+        if self.compare(self.api_result['json']):
+            self.module.post(API_ENDPOINT, version=API_VERSION, data=self.generate_xml(), xml_data=True)
+            return {
+                'changed': True,
+                'message': "The user {0} was added or modifed.".format(self.name),
+            }
+        else:
+            return {'changed': False}
 
-    schedule_result += str(schedule_start)
-    schedule_result += '-'
-    schedule_result += str(schedule_end)
-    return schedule_result
+    def get_user(self):
+        return self.api_result
 
+    def exists(self):
+        if self.api_result is None:
+            return False
+        else:
+            return True
 
-def create_duty_schedule_list(schedule=None):
-    """Create the list for all duty schedules.
+    def generate_xml(self):
+        """Returns XML format of the user."""
 
-    Parameters
-    ----------
-    schedule : list
-        The list of duty schedules in argument spec format.
+        xml_root = ET.Element('user')
+        xml_user = ET.SubElement(xml_root, 'user-id')
+        xml_user.text = self.name
 
-    Returns
-    -------
-    list
-        The list of duty schedules formatted in api form.
+        if self.full_name is not None:
+            xml_full_name = ET.SubElement(xml_root, 'full-name')
+            xml_full_name.text = self.full_name
 
-    """
-    if schedule is None:
-        return None
+        if self.description is not None:
+            xml_description = ET.SubElement(xml_root, 'user-comments')
+            xml_description.text = self.description
 
-    schedule_list = []
-    for item in schedule:
-        schedule_list.append(create_duty_schedule_string(item))
+        if self.email is not None:
+            xml_email = ET.SubElement(xml_root, 'email')
+            xml_email.text = self.email
 
-    return schedule_list
+        xml_password = ET.SubElement(xml_root, 'password')
+        xml_password.text = self.password
 
+        xml_password_salt = ET.SubElement(xml_root, 'passwordSalt')
+        xml_password_salt.text = str(self.password_salt).lower()
 
-def create_user_xml(
-    name,
-    password,
-    password_salt=True,
-    full_name=None,
-    email=None,
-    description=None,
-    duty_schedule=None,
-    role=None
-):
-    """Returns XML format of the user.
+        if self.duty_schedule is not None:
+            for item in self.duty_schedule:
+                schedule = self._create_duty_schedule_string(item)
+                xml_schedule = ET.SubElement(xml_root, 'duty-schedule')
+                xml_schedule.text = schedule
 
-    Parameters
-    ----------
-    name : str
-        User ID of the user
-    password : str
-        Password of the user
-    password_salt : bool
-        Password is stored using the SALT algorithm
-    full_name : str
-        Descriptive name for the user
-    email : str
-        Email of the user
-    description : str
-        Description of the user
-    duty_schedule : list
-        Duty schedule assigned to the user
-    role : list
-        Roles assigned to the user
+        if self.role is not None:
+            for item in self.role:
+                xml_role = ET.SubElement(xml_root, 'role')
+                xml_role.text = item
 
-    """
+        return ET.tostring(xml_root)
 
-    xml_root = ET.Element('user')
-    xml_user = ET.SubElement(xml_root, 'user-id')
-    xml_user.text = name
+    def compare(self, user):
+        """Checks if users are equal."""
 
-    if full_name is not None:
-        xml_full_name = ET.SubElement(xml_root, 'full-name')
-        xml_full_name.text = full_name
+        response_data = {
+            "user-id": self.name,
+            "full-name": self.full_name,
+            "user-comments": self.description,
+            "email": self.email,
+            "password": self.password,
+            "passwordSalt": self.password_salt,
+            "duty-schedule": self._create_duty_schedule_list(self.duty_schedule),
+            "role": self.role
+        }
 
-    if description is not None:
-        xml_description = ET.SubElement(xml_root, 'user-comments')
-        xml_description.text = description
+        # Format keys to match defaults if info is not provided
+        for key, value in dict(response_data).items():
+            if key == 'duty-schedule' and value is None:
+                response_data[key] = []
+            elif key == 'role' and value is None:
+                response_data[key] = []
+            elif key == 'email' and value is None:
+                response_data[key] = ""
+            elif value is None:
+                del response_data[key]
 
-    if email is not None:
-        xml_email = ET.SubElement(xml_root, 'email')
-        xml_email.text = email
+        if user == response_data:
+            diff = False
+        else:
+            diff = True
 
-    xml_password = ET.SubElement(xml_root, 'password')
-    xml_password.text = password
+        user_diff = {
+            "before": user,
+            "after": response_data
+        }
+        return diff
 
-    xml_password_salt = ET.SubElement(xml_root, 'passwordSalt')
-    xml_password_salt.text = str(password_salt).lower()
+    def _create_duty_schedule_string(self, schedule):
+        """Returns the string for the duty schedule for API usage."""
 
-    if duty_schedule is not None:
-        for item in duty_schedule:
-            schedule = create_duty_schedule_string(item)
-            xml_schedule = ET.SubElement(xml_root, 'duty-schedule')
-            xml_schedule.text = schedule
+        # schedule_days = [i.lower() for i in schedule['days']]
+        schedule_days = schedule['days']
+        schedule_start = schedule['start_time']
+        schedule_end = schedule['end_time']
+        result = ''
+        for day in DAYS_OF_WEEK:
+            if day in schedule_days:
+                result += DAYS_OF_WEEK[day]
 
-    if role is not None:
-        for item in role:
-            xml_role = ET.SubElement(xml_root, 'role')
-            xml_role.text = item
+        result += str(schedule_start)
+        result += '-'
+        result += str(schedule_end)
+        return result
 
-    return ET.tostring(xml_root)
+    def _create_duty_schedule_list(self, schedule=None):
+        """Create the list for all duty schedules."""
+
+        if schedule is None:
+            return None
+
+        schedule_list = []
+        for item in schedule:
+            schedule_list.append(
+                self._create_duty_schedule_string(item)
+            )
+
+        return schedule_list
 
 
 def main():
-
-    API_ENDPOINT = '/users'
-    API_VERSION = 1
 
     argument_spec = dict(
         name=dict(type='str', required=True),
@@ -354,6 +331,7 @@ def main():
 
     result = dict(
         changed=False,
+        failed=False
     )
 
     module = ONMSAPIModule(
@@ -361,71 +339,29 @@ def main():
         supports_check_mode=True
     )
 
-    name = module.params.get('name')
-    password = module.params.get('password')
-    password_salt = module.params.get('password_salt')
-    full_name = module.params.get('full_name')
-    email = module.params.get('email')
-    description = module.params.get('description')
-    duty_schedule = module.params.get('duty_schedule')
-    role = module.params.get('role')
-    state = module.params.get('state')
+    opennms_user = OpennmsUser(module=module)
 
-    endpoint = API_ENDPOINT + '/' + name
-
-    response = module.get(endpoint, version=API_VERSION, ignore_404=True)
-
-    data = create_user_xml(
-        name=name,
-        password=password,
-        password_salt=password_salt,
-        full_name=full_name,
-        email=email,
-        description=description,
-        duty_schedule=duty_schedule,
-        role=role
-    )
-    result['data'] = data
-    if response is None and state == 'present':
-        if module.check_mode:
-            result['changed'] = True
-            module.exit_json(**result)
-
-        _response = module.post(API_ENDPOINT, version=API_VERSION, data=data, xml_data=True)
-        result['changed'] = True
-        result['response'] = _response
-        result['message'] = "The user {0} was created.".format(name)
-    elif response is not None and state == 'present':
-        _user_diff, _user_diff_results = check_user_difference(
-            user=response['json'],
-            name=name,
-            password=password,
-            password_salt=password_salt,
-            full_name=full_name,
-            email=email,
-            description=description,
-            duty_schedule=duty_schedule,
-            role=role
-        )
-        result['_user_diff_state'] = _user_diff
-        result['_user_diff'] = _user_diff_results
-        if _user_diff:
+    # User exists
+    if opennms_user.exists():
+        if module.params['state'] == 'absent':
+            # Delete user
             if module.check_mode:
                 result['changed'] = True
                 module.exit_json(**result)
-            _response = module.post(API_ENDPOINT, data=data, xml_data=True)
-            result['changed'] = True
-            result['response'] = _response
-            result['message'] = "The user {0} was modified.".format(name)
-    elif response is not None and state == 'absent':
-        if module.check_mode:
-            result['changed'] = True
-            module.exit_json(**result)
-
-        _response = module.delete(endpoint)
-        result['changed'] = True
-        result['response'] = _response
-        result['message'] = "The user {0} was deleted.".format(name)
+            result = opennms_user.remove_user()
+        elif module.params['state'] == 'present':
+            # Update user
+            if module.check_mode:
+                result['changed'] = True
+                module.exit_json(**result)
+            result = opennms_user.update_user()
+    else:
+        if module.params['state'] == 'present':
+            # Add user
+            if module.check_mode:
+                result['changed'] = True
+                module.exit_json(**result)
+            result = opennms_user.add_user()
 
     module.exit_json(**result)
 
