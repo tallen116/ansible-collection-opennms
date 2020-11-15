@@ -18,7 +18,6 @@ Version added: 0.1.0
 Synopsis
 --------
 - A module to add, modify, delete OpenNMS users.
-name=dict(type='str', required=True), password=dict(type='str', required=True), password_salt=dict(type='bool', default=True), full_name=dict(), email=dict(), description=dict(), duty_schedule=dict(type='list', elements='dict'), role=dict(type='list', elements='str'), state=dict(type='str', choices=['present', 'absent'], default='present')
 
 
 
@@ -71,7 +70,8 @@ Parameters
                     <b>days</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">string</span>
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>
                     </div>
                 </td>
                 <td>
@@ -210,6 +210,7 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>
                     </div>
                 </td>
                 <td>
@@ -224,12 +225,12 @@ Parameters
                     <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>present</li>
+                                    <li><div style="color: blue"><b>present</b>&nbsp;&larr;</div></li>
                                     <li>absent</li>
                         </ul>
                 </td>
