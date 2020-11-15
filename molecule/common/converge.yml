@@ -88,3 +88,4 @@
         validate_certs: no
         name: molecule_basic
         password: "{{ lookup('tallen116.opennms.opennms_password', 'molecule', encrypt='salt', salt='m0l3cule!') }}"
+        state: present
