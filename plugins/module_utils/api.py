@@ -16,12 +16,38 @@ class ONMSAPIModule(ONMSModule):
     request = None
 
     def __init__(self, argument_spec, **kwargs):
+        """Initialize class.
+
+        Parameters
+        ----------
+        argument_spec : dict
+            List of arguments provided to the module
+        """
         super(ONMSAPIModule, self).__init__(argument_spec=argument_spec, **kwargs)
         self.request = Request()
 
     def make_request(self, method, endpoint, *args, **kwargs):
-        """
-        Make API request.
+        """Make API request.
+
+        Parameters
+        ----------
+        method : str
+            Type of request to perform
+        enpoint : str
+            Where to send the request
+        version : int, optional
+            Version of API (The default is 1).
+        ignore_404 : bool, optional
+            Determines if the module will handle 404 errors
+        xml_data : bool, optional
+            States the data is XML instead of JSON
+
+        Returns
+        -------
+        status_code : int
+            Return code of the request
+        json : dict
+            Return body of the request
         """
 
         if not method:
@@ -101,13 +127,17 @@ class ONMSAPIModule(ONMSModule):
         return {'status_code': status_code, 'json': response_json}
 
     def get(self, endpoint, *args, **kwargs):
+        """Wrapper for GET request"""
         return self.make_request('GET', endpoint, **kwargs)
 
     def post(self, endpoint, *args, **kwargs):
+        """Wrapper for POST request"""
         return self.make_request('POST', endpoint, **kwargs)
 
     def delete(self, endpoint, *args, **kwargs):
+        """Wrapper for DELETE request"""
         return self.make_request('DELETE', endpoint)
 
     def put(self, endpoint, *args, **kwargs):
+        """Wrapper for PUT request"""
         return self.make_request('PUT', endpoint, **kwargs)
