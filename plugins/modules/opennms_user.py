@@ -176,11 +176,13 @@ class OpennmsUser:
         }
 
     def update_user(self):
-        if self.compare(self.api_result['json']):
+        result, user_result = self.compare(self.api_result['json'])
+        if result:
             self.module.post(API_ENDPOINT, version=API_VERSION, data=self.generate_xml(), xml_data=True)
             return {
                 'changed': True,
                 'message': "The user {0} was added or modifed.".format(self.name),
+                'user_result': user_result
             }
         else:
             return {'changed': False}
@@ -258,15 +260,15 @@ class OpennmsUser:
                 del response_data[key]
 
         if user == response_data:
-            diff = False
+            result = False
         else:
-            diff = True
+            result = True
 
-        user_diff = {
+        user_result = {
             "before": user,
             "after": response_data
         }
-        return diff
+        return result, user_result
 
     def _create_duty_schedule_string(self, schedule):
         """Returns the string for the duty schedule for API usage."""
