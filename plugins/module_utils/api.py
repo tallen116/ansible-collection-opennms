@@ -35,8 +35,10 @@ class ONMSAPIModule(ONMSModule):
             Type of request to perform
         enpoint : str
             Where to send the request
+        data, optional
+            Information to send with the request (Default is None)
         version : int, optional
-            Version of API (The default is 1).
+            Version of API (Default is 1).
         ignore_404 : bool, optional
             Determines if the module will handle 404 errors
         xml_data : bool, optional
