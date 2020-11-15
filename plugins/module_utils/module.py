@@ -51,7 +51,7 @@ class ONMSModule(AnsibleModule):
         hostname = self.url.netloc.split(':')[0]
         try:
             self._resolvehost = gethostbyname(hostname)
-            self.debug(msg="Host resolved to {}".format(self._resolvehost))
+            self.debug(msg="Host resolved to {0}".format(self._resolvehost))
         except Exception as e:
             self.fail_json(msg="Unable to resolve host ({1}): {0}".format(hostname, e))
 
