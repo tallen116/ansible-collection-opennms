@@ -16,15 +16,7 @@ version_added: "0.1.0"
 
 description: A module to add, modify, delete OpenNMS users.
 
-        name=dict(type='str', required=True),
-        password=dict(type='str', required=True),
-        password_salt=dict(type='bool', default=True),
-        full_name=dict(),
-        email=dict(),
-        description=dict(),
-        duty_schedule=dict(type='list', elements='dict'),
-        role=dict(type='list', elements='str'),
-        state=dict(type='str', choices=['present', 'absent'], default='present')
+extends_documentation_fragment: tallen116.opennms.opennms_auth
 
 options:
     name:
@@ -51,6 +43,7 @@ options:
     duty_schedule:
         description: The duty schedule for the user.
         type: list
+        elements: dict
         suboptions:
             days:
                 description: The day of the week for the schedule.
@@ -62,7 +55,8 @@ options:
                     - Friday
                     - Saturday
                     - Sunday
-                type: str
+                type: list
+                elements: str
             start_time:
                 description: The start time of the schedule depicted in 24 hour.
                 type: int
@@ -72,6 +66,7 @@ options:
     role:
         description: The roles assigned to the user.
         type: list
+        elements: str
     state:
         description:
             - The state of the user.
@@ -80,6 +75,8 @@ options:
         choices:
             - present
             - absent
+        type: str
+        default: present
 
 author:
   - Timothy Allen (@tallen116)
@@ -313,8 +310,9 @@ def main():
         description=dict(type='str'),
         duty_schedule=dict(
             type='list',
+            elements='dict',
             options=dict(
-                days=dict(type=list, elements='str', choices=[
+                days=dict(type='list', elements='str', choices=[
                     'Monday',
                     'Tuesday',
                     'Wednesday',
@@ -323,8 +321,8 @@ def main():
                     'Saturday',
                     'Sunday'
                 ]),
-                start_time=dict(type=int),
-                end_time=dict(type=int)
+                start_time=dict(type='int'),
+                end_time=dict(type='int')
             )
         ),
         role=dict(type='list', elements='str'),
