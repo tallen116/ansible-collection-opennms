@@ -11,6 +11,9 @@ services:
 
 jobs:
   include:
+    - name: Ansible sanity test
+      script:
+        - ansible-test sanity --docker default -v
     - name: (CentOS) Install
       env:
         scenario: default_centos
