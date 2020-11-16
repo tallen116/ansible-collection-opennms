@@ -16,7 +16,7 @@ class ONMSModule(AnsibleModule):
         onms_host=dict(type='str', required=True),
         onms_username=dict(type='str', required=True),
         onms_password=dict(type='str', required=True, no_log=True),
-        validate_certs=dict(type='bool')
+        validate_certs=dict(type='bool', default=True)
     )
 
     # Define defaults
