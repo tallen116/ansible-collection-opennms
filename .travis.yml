@@ -9,10 +9,6 @@ env:
 services:
   - docker
 
-branches:
-  only:
-    - main
-
 jobs:
   include:
     - name: Ansible sanity test
