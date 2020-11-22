@@ -121,16 +121,16 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
-user:
-    description: Information about the user.
-    returned: always
+result:
+    description:
+      - The created or modified user.  Will be empty in case of deletion.
+    returned: success
     type: complex
     contains:
-        name:
-            description: Name of the user.
-            returned: always
-            type: str
-            sample: john.doe
+        user:
+            description: The user object details.
+            returned: success
+            type: complex
 
 msg:
     description: The status of the change.
@@ -177,7 +177,12 @@ class OpennmsUser:
             'changed': True,
             'msg': "The user {0} was removed.".format(self.name),
             'user': {
-                'name': self.name
+                'name': self.name,
+                'full_name': self.full_name,
+                'email': self.email,
+                'description': self.description,
+                'duty_schedule': self.duty_schedule,
+                'role': self.role
             }
         }
 
@@ -187,7 +192,12 @@ class OpennmsUser:
             'changed': True,
             'msg': "The user {0} was added.".format(self.name),
             'user': {
-                'name': self.name
+                'name': self.name,
+                'full_name': self.full_name,
+                'email': self.email,
+                'description': self.description,
+                'duty_schedule': self.duty_schedule,
+                'role': self.role
             }
         }
 
@@ -199,7 +209,12 @@ class OpennmsUser:
                 'changed': True,
                 'msg': "The user {0} was modifed.".format(self.name),
                 'user': {
-                    'name': self.name
+                    'name': self.name,
+                    'full_name': self.full_name,
+                    'email': self.email,
+                    'description': self.description,
+                    'duty_schedule': self.duty_schedule,
+                    'role': self.role
                 }
             }
         else:
