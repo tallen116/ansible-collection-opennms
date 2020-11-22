@@ -176,14 +176,6 @@ class OpennmsUser:
         return {
             'changed': True,
             'msg': "The user {0} was removed.".format(self.name),
-            'user': {
-                'name': self.name,
-                'full_name': self.full_name,
-                'email': self.email,
-                'description': self.description,
-                'duty_schedule': self.duty_schedule,
-                'role': self.role
-            }
         }
 
     def add_user(self):
@@ -191,13 +183,15 @@ class OpennmsUser:
         return {
             'changed': True,
             'msg': "The user {0} was added.".format(self.name),
-            'user': {
-                'name': self.name,
-                'full_name': self.full_name,
-                'email': self.email,
-                'description': self.description,
-                'duty_schedule': self.duty_schedule,
-                'role': self.role
+            'result': {
+                'user': {
+                    'name': self.name,
+                    'full_name': self.full_name,
+                    'email': self.email,
+                    'description': self.description,
+                    'duty_schedule': self.duty_schedule,
+                    'role': self.role
+                }
             }
         }
 
@@ -208,13 +202,15 @@ class OpennmsUser:
             return {
                 'changed': True,
                 'msg': "The user {0} was modifed.".format(self.name),
-                'user': {
-                    'name': self.name,
-                    'full_name': self.full_name,
-                    'email': self.email,
-                    'description': self.description,
-                    'duty_schedule': self.duty_schedule,
-                    'role': self.role
+                'result': {
+                    'user': {
+                        'name': self.name,
+                        'full_name': self.full_name,
+                        'email': self.email,
+                        'description': self.description,
+                        'duty_schedule': self.duty_schedule,
+                        'role': self.role
+                    }
                 }
             }
         else:
