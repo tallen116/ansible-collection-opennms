@@ -121,7 +121,22 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
+user:
+    description: Information about the user.
+    returned: always
+    type: complex
+    contains:
+        name:
+            description: Name of the user.
+            returned: always
+            type: str
+            sample: john.doe
 
+msg:
+    description: The status of the change.
+    type: str
+    returned: always
+    sample: The user john.doe was added.
 '''
 
 from ..module_utils.api import ONMSAPIModule
@@ -157,19 +172,23 @@ class OpennmsUser:
         self.api_result = module.get(self.endpoint, version=API_VERSION, ignore_404=True)
 
     def remove_user(self):
-        result = self.module.delete(self.endpoint)
+        self.module.delete(self.endpoint)
         return {
             'changed': True,
-            'message': "The user {0} was removed.".format(self.name),
-            'status_code': result['status_code']
+            'msg': "The user {0} was removed.".format(self.name),
+            'user': {
+                'name': self.name
+            }
         }
 
     def add_user(self):
-        result = self.module.post(API_ENDPOINT, version=API_VERSION, data=self.generate_xml(), xml_data=True)
+        self.module.post(API_ENDPOINT, version=API_VERSION, data=self.generate_xml(), xml_data=True)
         return {
             'changed': True,
-            'message': "The user {0} was added or modifed.".format(self.name),
-            'status_code': result['status_code']
+            'msg': "The user {0} was added.".format(self.name),
+            'user': {
+                'name': self.name
+            }
         }
 
     def update_user(self):
@@ -178,8 +197,10 @@ class OpennmsUser:
             self.module.post(API_ENDPOINT, version=API_VERSION, data=self.generate_xml(), xml_data=True)
             return {
                 'changed': True,
-                'message': "The user {0} was added or modifed.".format(self.name),
-                'user_result': user_result
+                'msg': "The user {0} was modifed.".format(self.name),
+                'user': {
+                    'name': self.name
+                }
             }
         else:
             return {'changed': False}
