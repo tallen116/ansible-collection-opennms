@@ -196,7 +196,7 @@ class OpennmsUser:
         }
 
     def update_user(self):
-        result, user_result = self.compare(self.api_result['json'])
+        result = self.compare(self.api_result['json'])
         if result:
             self.module.post(API_ENDPOINT, version=API_VERSION, data=self.generate_xml(), xml_data=True)
             return {
@@ -293,11 +293,7 @@ class OpennmsUser:
         else:
             result = True
 
-        user_result = {
-            "before": user,
-            "after": response_data
-        }
-        return result, user_result
+        return result
 
     def _create_duty_schedule_string(self, schedule):
         """Returns the string for the duty schedule for API usage."""
@@ -384,7 +380,7 @@ def main():
         elif module.params['state'] == 'present':
             # Update user
             if module.check_mode:
-                result['changed'] = True
+                result['changed'] = opennms_user.compare(opennms_user.get_user())
                 module.exit_json(**result)
             result = opennms_user.update_user()
     else:
