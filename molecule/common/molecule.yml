@@ -13,7 +13,7 @@ provisioner:
     verify: ../common/verify.yml
   log: True
   options:
-    vvv: True
+    vvv: False
   env:
     ANSIBLE_DEBUG: False
 verifier:
