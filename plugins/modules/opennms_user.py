@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 # Copyright: (c) 2018, Timothy Allen (@tallen116)
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -24,8 +25,9 @@ options:
         required: true
         type: str
     password:
-        description: The password for the user.
-        required: true
+        description:
+          - The password for the user.
+          - Required when adding a new user.
         type: str
     password_salt:
         description: The password salt hashing algorithm.
@@ -120,24 +122,7 @@ EXAMPLES = r'''
     state: present
 '''
 
-RETURN = r'''
-result:
-    description:
-      - The created or modified user.  Will be empty in case of deletion.
-    returned: success
-    type: complex
-    contains:
-        user:
-            description: The user object details.
-            returned: success
-            type: complex
-
-msg:
-    description: The status of the change.
-    type: str
-    returned: always
-    sample: The user john.doe was added.
-'''
+RETURN = r''' # '''
 
 from ..module_utils.api import ONMSAPIModule
 import xml.etree.ElementTree as ET
@@ -175,24 +160,16 @@ class OpennmsUser:
         self.module.delete(self.endpoint)
         return {
             'changed': True,
-            'msg': "The user {0} was removed.".format(self.name),
+            'msg': "The user {0} was removed.".format(self.name)
         }
 
     def add_user(self):
+        if self.password is None:
+            self.module.fail_json('Password is required when adding a new user.')
         self.module.post(API_ENDPOINT, version=API_VERSION, data=self.generate_xml(), xml_data=True)
         return {
             'changed': True,
-            'msg': "The user {0} was added.".format(self.name),
-            'result': {
-                'user': {
-                    'name': self.name,
-                    'full_name': self.full_name,
-                    'email': self.email,
-                    'description': self.description,
-                    'duty_schedule': self.duty_schedule,
-                    'role': self.role
-                }
-            }
+            'msg': "The user {0} was added.".format(self.name)
         }
 
     def update_user(self):
@@ -201,23 +178,13 @@ class OpennmsUser:
             self.module.post(API_ENDPOINT, version=API_VERSION, data=self.generate_xml(), xml_data=True)
             return {
                 'changed': True,
-                'msg': "The user {0} was modifed.".format(self.name),
-                'result': {
-                    'user': {
-                        'name': self.name,
-                        'full_name': self.full_name,
-                        'email': self.email,
-                        'description': self.description,
-                        'duty_schedule': self.duty_schedule,
-                        'role': self.role
-                    }
-                }
+                'msg': "The user {0} was modifed.".format(self.name)
             }
         else:
             return {'changed': False}
 
     def get_user(self):
-        return self.api_result
+        return self.api_result['json']
 
     def exists(self):
         if self.api_result is None:
@@ -331,7 +298,7 @@ def main():
 
     argument_spec = dict(
         name=dict(type='str', required=True),
-        password=dict(type='str', required=True, nolog=True),
+        password=dict(type='str', nolog=True),
         password_salt=dict(type='bool', default=True),
         full_name=dict(type='str'),
         email=dict(type='str'),
