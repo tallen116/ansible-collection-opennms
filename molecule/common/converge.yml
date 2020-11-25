@@ -46,46 +46,4 @@
       retries: 60
       delay: 5
 
-    - name: Add user (advance)
-      tallen116.opennms.opennms_user:
-        onms_host: https://127.0.0.1:8443
-        onms_username: admin
-        onms_password: admin
-        validate_certs: no
-        name: molecule_advance
-        password: "{{ lookup('tallen116.opennms.opennms_password', 'molecule', encrypt='salt', salt='m0l3cule!') }}"
-        full_name: Molecule Advance
-        email: moleculeadvance@localhost.local
-        description: Molecule Advance test user
-        duty_schedule:
-          - days:
-              - Monday
-            start_time: 0
-            end_time: 2359
-          - days:
-              - Monday
-              - Tuesday
-              - Wednesday
-              - Thursday
-              - Sunday
-            start_time: 630
-            end_time: 1900
-          - days:
-              - Friday
-              - Saturday
-            start_time: 1000
-            end_time: 1730
-        role:
-          - ROLE_ADMIN
-          - ROLE_USER
-        state: present
-
-    - name: Add user (basic)
-      tallen116.opennms.opennms_user:
-        onms_host: https://127.0.0.1:8443
-        onms_username: admin
-        onms_password: admin
-        validate_certs: no
-        name: molecule_basic
-        password: "{{ lookup('tallen116.opennms.opennms_password', 'molecule', encrypt='salt', salt='m0l3cule!') }}"
-        state: present
+    - include_tasks: tasks/user.yml

@@ -1,0 +1,131 @@
+---
+- name: Add user
+  tallen116.opennms.opennms_user:
+    onms_host: https://127.0.0.1:8443
+    onms_username: admin
+    onms_password: admin
+    validate_certs: no
+    name: molecule
+    password: "{{ lookup('tallen116.opennms.opennms_password', 'molecule', encrypt='salt', salt='m0l3cule!') }}"
+    state: present
+  register: user
+
+- name: Check user was created
+  assert:
+    that:
+      - user is changed
+
+- name: Add user again
+  tallen116.opennms.opennms_user:
+    onms_host: https://127.0.0.1:8443
+    onms_username: admin
+    onms_password: admin
+    validate_certs: no
+    name: molecule
+    password: "{{ lookup('tallen116.opennms.opennms_password', 'molecule', encrypt='salt', salt='m0l3cule!') }}"
+    state: present
+  register: user_2
+
+- name: Verify nothing changed
+  assert:
+    that:
+      - user_2 is not changed
+
+- name: Add user in check mode
+  tallen116.opennms.opennms_user:
+    onms_host: https://127.0.0.1:8443
+    onms_username: admin
+    onms_password: admin
+    validate_certs: no
+    name: molecule
+    password: "{{ lookup('tallen116.opennms.opennms_password', 'molecule', encrypt='salt', salt='m0l3cule!') }}"
+    state: present
+  check_mode: yes
+  register: user_check
+
+- name: Verify nothing changed
+  assert:
+    that:
+      - user_check is not changed
+
+- name: Update user
+  tallen116.opennms.opennms_user:
+    onms_host: https://127.0.0.1:8443
+    onms_username: admin
+    onms_password: admin
+    validate_certs: no
+    name: molecule
+    password: "{{ lookup('tallen116.opennms.opennms_password', 'molecule', encrypt='salt', salt='m0l3cule!') }}"
+    full_name: Molecule User
+    email: molecule@localhost.local
+    description: Molecule test user
+    duty_schedule:
+      - days:
+          - Monday
+        start_time: 0
+        end_time: 2359
+    role:
+      - ROLE_ADMIN
+    state: present
+  register: user_3
+
+- name: Ensure user has been updated
+  assert:
+    that:
+      - user_3 is changed
+
+- name: Update user again
+  tallen116.opennms.opennms_user:
+    onms_host: https://127.0.0.1:8443
+    onms_username: admin
+    onms_password: admin
+    validate_certs: no
+    name: molecule
+    password: "{{ lookup('tallen116.opennms.opennms_password', 'molecule', encrypt='salt', salt='m0l3cule!') }}"
+    full_name: Molecule User
+    email: molecule@localhost.local
+    description: Molecule test user
+    duty_schedule:
+      - days:
+          - Monday
+        start_time: 0
+        end_time: 2359
+    role:
+      - ROLE_ADMIN
+    state: present
+  register: user_4
+
+- name: Ensure nothing changed
+  assert:
+    that:
+      - user_4 is not changed
+
+- name: Delete user
+  tallen116.opennms.opennms_user:
+    onms_host: https://127.0.0.1:8443
+    onms_username: admin
+    onms_password: admin
+    validate_certs: no
+    name: molecule
+    state: absent
+  register: user_5
+
+- name: Ensure changed
+  assert:
+    that:
+      - user_5 is changed
+
+- name: Delete user again
+  tallen116.opennms.opennms_user:
+    onms_host: https://127.0.0.1:8443
+    onms_username: admin
+    onms_password: admin
+    validate_certs: no
+    name: molecule
+    state: absent
+  register: user_6
+
+- name: Ensure nothing changed
+  assert:
+    that:
+      - user_6 is not changed
