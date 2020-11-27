@@ -46,6 +46,8 @@
       retries: 60
       delay: 5
 
+    - include_tasks: tasks/opennms.yml
+
     - include_tasks: tasks/user.yml
       args:
         apply:
