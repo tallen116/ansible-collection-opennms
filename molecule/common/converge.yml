@@ -47,3 +47,7 @@
       delay: 5
 
     - include_tasks: tasks/user.yml
+      args:
+        apply:
+          tags:
+            - molecule-idempotence-notest
